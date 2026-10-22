@@ -1,10 +1,12 @@
 package com.app;
 
+import com.app.config.SecurityConfig;
 import com.app.persistence.entity.PermissionEntity;
 import com.app.persistence.entity.RoleEntity;
 import com.app.persistence.entity.RoleEnum;
 import com.app.persistence.entity.UserEntity;
 import com.app.persistence.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,6 +21,9 @@ public class SpringSecurityAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringSecurityAppApplication.class, args);
 	}
+
+	@Autowired
+	SecurityConfig securityConfig;
 
 	@Bean
 	CommandLineRunner init(UserRepository userRepository){
@@ -63,7 +68,7 @@ public class SpringSecurityAppApplication {
 					.build();
 
 			RoleEntity roleDeveloper = RoleEntity.builder()
-					.roleEnum(RoleEnum.ADMIN)
+					.roleEnum(RoleEnum.DEVELOPER)
 					.permissionList(Set.of(createPermission,
 							readPermission, updatePermission,
 							deletePermission, refactorPermission))
@@ -73,7 +78,7 @@ public class SpringSecurityAppApplication {
 
 			UserEntity user01 = UserEntity.builder()
 					.username("santiago")
-					.password("3214")
+					.password(securityConfig.passwordEncoder().encode("3214"))
 					.isEnabled(true)
 					.accountNotExpired(true)
 					.accountNotLocked(true)
@@ -83,7 +88,7 @@ public class SpringSecurityAppApplication {
 
 			UserEntity user02 = UserEntity.builder()
 					.username("daniel")
-					.password("3214")
+					.password("$2a$10$3.iW7RQeMIjwvWwQJJXXVehM8YaJjKu.8143uB5N81Lc4Ra7VTKYW")
 					.isEnabled(true)
 					.accountNotExpired(true)
 					.accountNotLocked(true)
@@ -93,7 +98,7 @@ public class SpringSecurityAppApplication {
 
 			UserEntity user03 = UserEntity.builder()
 					.username("andrea")
-					.password("3214")
+					.password("$2a$10$3.iW7RQeMIjwvWwQJJXXVehM8YaJjKu.8143uB5N81Lc4Ra7VTKYW")
 					.isEnabled(true)
 					.accountNotExpired(true)
 					.accountNotLocked(true)
@@ -103,7 +108,7 @@ public class SpringSecurityAppApplication {
 
 			UserEntity user04 = UserEntity.builder()
 					.username("anya")
-					.password("3214")
+					.password("$2a$10$3.iW7RQeMIjwvWwQJJXXVehM8YaJjKu.8143uB5N81Lc4Ra7VTKYW")
 					.isEnabled(true)
 					.accountNotExpired(true)
 					.accountNotLocked(true)
