@@ -1,5 +1,6 @@
 package com.app.config;
 
+import com.app.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,22 +30,33 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .csrf(csrf ->csrf.disable())
+//                .httpBasic(Customizer.withDefaults())
+//                .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(http ->{
+//                    // Configurar los endpoints publicos
+//                    http.requestMatchers(HttpMethod.GET, "/auth/hello").permitAll();
+//
+//                    //Configurar los endpoints privados
+//                    http.requestMatchers(HttpMethod.GET, "/auth/helloSecured").hasAuthority("READ");
+//
+//                    // Configurar el resto de endpoints NO ESPECIFICADOS
+//                    http.anyRequest().authenticated();
+//                })
+//                .build();
+//    }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf ->csrf.disable())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(http ->{
-                    // Configurar los endpoints publicos
-                    http.requestMatchers(HttpMethod.GET, "/auth/hello").permitAll();
 
-                    //Configurar los endpoints privados
-                    http.requestMatchers(HttpMethod.GET, "/auth/helloSecured").hasAuthority("READ");
-
-                    // Configurar el resto de endpoints NO ESPECIFICADOS
-                    http.anyRequest().authenticated();
-                })
                 .build();
     }
 
@@ -54,31 +66,14 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider(UserDetailsServiceImpl userDetailsService){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userDetailsService);
         return provider;
     }
 
-    @Bean
-    public UserDetailsService userDetailsService(){
-        List<UserDetails> userDetails = new ArrayList<>();
 
-        userDetails.add(User.withUsername("zan")
-                .password("3214")
-                .roles("ADMIN")
-                .authorities("READ", "CREATE")
-                .build());
-
-        userDetails.add(User.withUsername("daniel")
-                .password("3214")
-                .roles("USER")
-                .authorities("READ")
-                .build());
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
